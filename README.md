@@ -4,5 +4,5 @@
 
 
 # Korean
-- 유니티용 Androind Push Notificaion Plugin 입니다.
+- 유니티용 Androind Push Notification Plugin 입니다.
 - 사용방법은 제 다른 repository 에 있는 유니티용 샘플 프로젝트를 참고해주세요.
