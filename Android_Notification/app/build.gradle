@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.google.com' }
+        jcenter()
+        google()
+    }
+}
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            project.archivesBaseName = 'push_notification'
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildToolsVersion "28.0.3"
+}
+
+dependencies {
+    compileOnly fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    compileOnly files('libs\\unity-classes.jar')
+}
