@@ -64,28 +64,24 @@ public class PushNotificationManager extends BroadcastReceiver
         public NotificationData()
         {
             Id = -1;
-            Color = 0;
-            Bundle = "";
+            Bundle = new String();
             NotiTime = Calendar.getInstance().getTime();
-            Title = "";
-            Message = "";
-            Ticker = "";
-            Small_Icon = "";
-            Large_Icon = "";
-            SoundName = "";
+            Title = new String();
+            Message = new String();
+            Ticker = new String();
+            Small_Icon = new String();
+            Large_Icon = new String();
+            SoundName = new String();
             IsSound = true;
             IsVibrate = true;
             IsLight = true;
             IsRepeat = false;
-
-            RepeatMS = 0;
         }
     }
 
     public static void SetNotificationOnce(int id, String bundle, long delayMS, String title, String message, String ticker,
-                                           String smallIcon, String largeIcon, int notiColor,
-                                           boolean bIsSound, String soundName, boolean bIsVibrate,
-                                           boolean bIsLight)
+                                           String icon, int color, boolean isSmall_Icon, boolean isSound, String soundName, boolean isVibrate,
+                                           boolean isLight)
     {
         long nowTime = System.currentTimeMillis();
         long notificationTime = nowTime + delayMS;
@@ -102,13 +98,19 @@ public class PushNotificationManager extends BroadcastReceiver
         intent.putExtra("title", title);
         intent.putExtra("message", message);
         intent.putExtra("ticker", ticker);
-        intent.putExtra("smallIcon", smallIcon);
-        intent.putExtra("LargeIcon", largeIcon);
-        intent.putExtra("color", notiColor);
-        intent.putExtra("bisSound", bIsSound);
+        intent.putExtra("smallIcon", "");
+        intent.putExtra("LargeIcon", "");
+        if (isSmall_Icon) {
+            intent.putExtra("smallIcon", icon);
+        } else {
+            intent.putExtra("LargeIcon", icon);
+        }
+
+        intent.putExtra("color", color);
+        intent.putExtra("bisSound", isSound);
         intent.putExtra("soundName", soundName);
-        intent.putExtra("bisVibrate", bIsVibrate);
-        intent.putExtra("bisLight", bIsLight);
+        intent.putExtra("bisVibrate", isVibrate);
+        intent.putExtra("bisLight", isLight);
         //=============================================================/
 
         //=================== Repeat Data ================================/
@@ -121,10 +123,9 @@ public class PushNotificationManager extends BroadcastReceiver
         long delayTime = System.currentTimeMillis() + delayMS;
         //=========================/
 
-        //PendingIntent sender = PendingIntent.getBroadcast(currentActivity, id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         PendingIntent sender = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        PutNotificationData(id, bundle, dateString, title, message, ticker, smallIcon, largeIcon, notiColor, bIsSound, soundName, bIsVibrate, bIsLight, true, 0);
+        PutNotificationData(id, bundle, dateString, title, message, ticker, icon, color, isSmall_Icon, isSound, soundName, isVibrate, isLight, true, 0);
 
         if (mNotificationMap.get(Integer.toString((id))) != null)
         {
@@ -146,9 +147,8 @@ public class PushNotificationManager extends BroadcastReceiver
     }
 
     public static void SetNotificationRepeating(int id, String bundle, long delayMS, long repeatMS, String title, String message, String ticker,
-                                                String smallIcon, String largeIcon, int notiColor,
-                                                boolean bIsSound, String soundName, boolean bIsVibrate,
-                                                boolean bIsLight)
+                                                String icon, int color, boolean isSmall_Icon, boolean isSound, String soundName, boolean isVibrate,
+                                                boolean isLight)
     {
         long nowTime = System.currentTimeMillis();
         long notificationTime = nowTime + delayMS;
@@ -166,15 +166,21 @@ public class PushNotificationManager extends BroadcastReceiver
         intent.putExtra("title", title);
         intent.putExtra("message", message);
         intent.putExtra("ticker", ticker);
-        intent.putExtra("smallIcon", smallIcon);
-        intent.putExtra("LargeIcon", largeIcon);
+        intent.putExtra("smallIcon", "");
+        intent.putExtra("LargeIcon", "");
 
-        intent.putExtra("color", notiColor);
+        if (isSmall_Icon) {
+            intent.putExtra("smallIcon", icon);
+        } else {
+            intent.putExtra("LargeIcon", icon);
+        }
 
-        intent.putExtra("bisSound", bIsSound);
+
+        intent.putExtra("color", color);
+        intent.putExtra("bisSound", isSound);
         intent.putExtra("soundName", soundName);
-        intent.putExtra("bisVibrate", bIsVibrate);
-        intent.putExtra("bisLight", bIsLight);
+        intent.putExtra("bisVibrate", isVibrate);
+        intent.putExtra("bisLight", isLight);
         //=============================================================/
 
         //====================== Repeat Data =================/
@@ -187,10 +193,9 @@ public class PushNotificationManager extends BroadcastReceiver
         long delayTime = System.currentTimeMillis() + delayMS;
         //=========================/
 
-        //PendingIntent sender = PendingIntent.getBroadcast(currentActivity, id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         PendingIntent sender = PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        PutNotificationData(id, bundle, dateString, title, message, ticker, smallIcon, largeIcon, notiColor, bIsSound, soundName, bIsVibrate, bIsLight, true, repeatMS);
+        PutNotificationData(id, bundle, dateString, title, message, ticker, icon, color, isSmall_Icon, isSound, soundName, isVibrate, isLight, true, repeatMS);
 
         if (mNotificationMap.get(Integer.toString((id))) != null)
         {
@@ -211,10 +216,8 @@ public class PushNotificationManager extends BroadcastReceiver
         }
     }
 
-    private static void ReRegistrationAlarm(int id, String bundle, long repeatTime, String title, String message, String ticker,
-                                            String smallIcon, String largeIcon, int notiColor,
-                                            boolean bIsSound, String soundName, boolean bIsVibrate,
-                                            boolean bIsLight)
+    private static void ReRegistrationNotification(int id, String bundle, long repeatTime, String title, String message, String ticker,
+                                            String smallIcon, String largeIcon, int color, boolean isSound, String soundName, boolean isVibrate, boolean isLight)
     {
         CancelPendingNotification(id);
 
@@ -231,12 +234,12 @@ public class PushNotificationManager extends BroadcastReceiver
         intent.putExtra("smallIcon", smallIcon);
         intent.putExtra("LargeIcon", largeIcon);
 
-        intent.putExtra("color", notiColor);
+        intent.putExtra("color", color);
 
-        intent.putExtra("bisSound", bIsSound);
+        intent.putExtra("bisSound", isSound);
         intent.putExtra("soundName", soundName);
-        intent.putExtra("bisVibrate", bIsVibrate);
-        intent.putExtra("bisLight", bIsLight);
+        intent.putExtra("bisVibrate", isVibrate);
+        intent.putExtra("bisLight", isLight);
         //=============================================================/
 
         //====================== Repeat Data =================/
@@ -275,6 +278,8 @@ public class PushNotificationManager extends BroadcastReceiver
 
             long notificationTime = tempData.NotiTime.getTime();
 
+            String icon;
+
             if (tempData.IsRepeat == false)
             {
                 if (nowTime > notificationTime)
@@ -285,7 +290,13 @@ public class PushNotificationManager extends BroadcastReceiver
                 {
                     long delayTime = notificationTime - nowTime;
 
-                    SetNotificationOnce(index, tempData.Bundle, delayTime, tempData.Title, tempData.Message, tempData.Ticker, tempData.Small_Icon, tempData.Large_Icon, tempData.Color,
+                    if (tempData.Small_Icon.isEmpty()) {
+                        icon = tempData.Large_Icon;
+                    } else {
+                        icon = tempData.Small_Icon;
+                    }
+
+                    SetNotificationOnce(index, tempData.Bundle, delayTime, tempData.Title, tempData.Message, tempData.Ticker, icon, tempData.Color, tempData.Large_Icon.isEmpty(),
                             tempData.IsSound, tempData.SoundName, tempData.IsVibrate, tempData.IsLight);
                 }
             }
@@ -303,8 +314,15 @@ public class PushNotificationManager extends BroadcastReceiver
                     delayTime = notificationTime - nowTime;
                 }
 
-                SetNotificationRepeating(index, tempData.Bundle, delayTime, tempData.RepeatMS, tempData.Title, tempData.Message, tempData.Ticker, tempData.Small_Icon, tempData.Large_Icon,
-                        tempData.Color, tempData.IsSound, tempData.SoundName, tempData.IsVibrate, tempData.IsLight);
+
+                if (tempData.Small_Icon.isEmpty()) {
+                    icon = tempData.Large_Icon;
+                } else {
+                    icon = tempData.Small_Icon;
+                }
+
+                SetNotificationRepeating(index, tempData.Bundle, delayTime, tempData.RepeatMS, tempData.Title, tempData.Message, tempData.Ticker, icon,
+                        tempData.Color, tempData.Large_Icon.isEmpty(),  tempData.IsSound, tempData.SoundName, tempData.IsVibrate, tempData.IsLight);
             }
 
             index++;
@@ -312,10 +330,7 @@ public class PushNotificationManager extends BroadcastReceiver
     }
 
     public void onReceive(Context context, Intent intent) {
-
         mContext = context;
-
-        Log.e("JM_Plugin", "Start Notification Receiver");
 
         if (intent.getAction() != null)
         {
@@ -336,7 +351,7 @@ public class PushNotificationManager extends BroadcastReceiver
             String smallIcon = intent.getStringExtra("smallIcon");
             String largeIcon = intent.getStringExtra("LargeIcon");
 
-            int notiColor = intent.getIntExtra("color", 0);
+            int color = intent.getIntExtra("color", 0);
 
             Boolean bIsSound = intent.getBooleanExtra("bisSound", false);
             String soundName = intent.getStringExtra("soundName");
@@ -375,18 +390,16 @@ public class PushNotificationManager extends BroadcastReceiver
                     .setContentText(message);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder.setColor(notiColor);
+                builder.setColor(color);
             }
 
-            if (ticker != null && ticker.length() > 0) {
+            if (ticker.length() > 0) {
                 builder.setTicker(ticker);
             }
 
-            if (smallIcon != null && smallIcon.length() > 0) {
+            if (!smallIcon.isEmpty()) {
                 builder.setSmallIcon(resources.getIdentifier(smallIcon, "drawable", context.getPackageName()));
-            }
-
-            if (largeIcon != null && largeIcon.length() > 0) {
+            } else if (!largeIcon.isEmpty()) {
                 builder.setLargeIcon(BitmapFactory.decodeResource(resources, resources.getIdentifier(largeIcon, "drawable",
                         context.getPackageName())));
             }
@@ -415,7 +428,7 @@ public class PushNotificationManager extends BroadcastReceiver
 
             if (bIsRepeat == true)
             {
-                ReRegistrationAlarm(id, bundle, repeatSec, title, message, ticker, smallIcon, largeIcon, notiColor, bIsSound, soundName, bIsVibrate, bIsLight);
+                ReRegistrationNotification(id, bundle, repeatSec, title, message, ticker, smallIcon, largeIcon, color, bIsSound, soundName, bIsVibrate, bIsLight);
             }
         }
     }
@@ -446,15 +459,15 @@ public class PushNotificationManager extends BroadcastReceiver
         notificationManager.cancelAll();
     }
 
-    private static void PutNotificationData(int id, String bundle, String notiTime, String title, String message, String ticker, String small_Icon,
-                                    String large_Icon, int color, boolean bIsSound, String soundName, boolean bIsVibrate, boolean bIsLight, boolean bIsRepeat, long repeatMS)
+    private static void PutNotificationData(int id, String bundle, String time, String title, String message, String ticker, String icon, int color,
+                                            boolean isSmall_Icon, boolean isSound, String soundName, boolean isVibrate, boolean isLight, boolean isRepeat, long repeatMS)
     {
         NotificationData tempData = new NotificationData();
         tempData.Id = id;
         tempData.Color = color;
 
         Date to = null;
-        String from =  notiTime;
+        String from =  time;
 
         try {
             SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -470,13 +483,18 @@ public class PushNotificationManager extends BroadcastReceiver
         tempData.Title = title;
         tempData.Message = message;
         tempData.Ticker = ticker;
-        tempData.Small_Icon = small_Icon;
-        tempData.Large_Icon = large_Icon;
+
+        if (isSmall_Icon) {
+            tempData.Small_Icon = icon;
+        } else {
+            tempData.Large_Icon = icon;
+        }
+
         tempData.SoundName = soundName;
-        tempData.IsSound = bIsSound;
-        tempData.IsVibrate = bIsVibrate;
-        tempData.IsLight = bIsLight;
-        tempData.IsRepeat = bIsRepeat;
+        tempData.IsSound = isSound;
+        tempData.IsVibrate = isVibrate;
+        tempData.IsLight = isLight;
+        tempData.IsRepeat = isRepeat;
         tempData.RepeatMS = repeatMS;
 
         mNotificationMap.put(Integer.toString(id), tempData);
@@ -498,7 +516,7 @@ public class PushNotificationManager extends BroadcastReceiver
             SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String to = transFormat.format(from);
 
-            jsonObject.put("NotiTime", to);
+            jsonObject.put("Time", to);
             jsonObject.put("Title", values.Title);
             jsonObject.put("Message", values.Message);
             jsonObject.put("Ticker", values.Ticker);
@@ -543,7 +561,7 @@ public class PushNotificationManager extends BroadcastReceiver
                 Date to = null;
 
                 try {
-                    String from = tempJson.getString("NotiTime");
+                    String from = tempJson.getString("Time");
                     SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     to = transFormat.parse(from);
                 } catch (ParseException e)
