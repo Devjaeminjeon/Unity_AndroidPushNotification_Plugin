@@ -17,10 +17,10 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.unity3d.player.UnityPlayer;
 
@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+@SuppressWarnings("unchecked")
 
 public class PushNotificationManager extends BroadcastReceiver
 {
@@ -376,7 +378,7 @@ public class PushNotificationManager extends BroadcastReceiver
 
             Intent notificationIntent = context.getPackageManager().getLaunchIntentForPackage(bundle);
 
-            TaskStackBuilder stackBuilder = androidx.core.app.TaskStackBuilder.create(context);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
             stackBuilder.addNextIntent(notificationIntent);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,

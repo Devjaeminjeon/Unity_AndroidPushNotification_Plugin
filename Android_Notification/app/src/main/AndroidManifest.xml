@@ -4,7 +4,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application>
-
         <receiver android:name="jm.plugin.androidnotification.PushNotificationManager">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
